@@ -17,8 +17,12 @@ class CreateStocksTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('size');
-            $table->integer('stock');
-            $table->integer('price');
+            $table->integer('carton')->nullable();
+            $table->integer('pieces')->nullable();
+            $table->integer('carton_price')->nullable();
+            $table->integer('pieces_price')->nullable();
+            $table->string('category')->nullable();
+
             $table->timestamps();
         });
     }

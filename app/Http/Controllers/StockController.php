@@ -29,7 +29,7 @@ class StockController extends Controller
             $ccc = "";
         }
         foreach ($counters as $counter){
-            $ccc .= '<option value="'.$counter->id.'">'.$counter->name.'</option>
+            $ccc .= '<option value="'.$counter->id.'"><b>'.$counter->property->name.'</b>('.$counter->name.')</option>
 ';
         }
         $output = '<input type="hidden" name="stockId" value="'.$stock->id.'"
@@ -49,55 +49,57 @@ class StockController extends Controller
                             <input type="text" name="size" value="'.$stock->size.'" placeholder="Product" class="form-control" id="recipient-name">
                         </div>
                          <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">Price:</label>
-                            <input type="text" name="price" value="'.$stock->price.'" placeholder="Product" class="form-control" id="recipient-name">
+                            <label for="recipient-name" class="col-form-label">Carton Price:</label>
+                            <input type="text" name="carton_price" value="'.$stock->carton_price.'" placeholder="Carton Price" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Pieces Price:</label>
+                            <input type="text" name="pieces_price" value="'.$stock->pieces_price.'" placeholder="Pieces Price" class="form-control" id="recipient-name">
                         </div>
 
                         <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">Stock:</label>
-                            <input type="text" name="stock" placeholder="Stock Number" class="form-control" id="recipient-name" required>
+                            <label for="recipient-name" class="col-form-label">Cartons/Crates:</label>
+                            <input type="text" name="carton" placeholder="Cartons" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Pieces:</label>
+                            <input type="text" name="pieces" placeholder="Pieces" class="form-control" id="recipient-name">
                         </div>
         ';
         return response($output);
     }
     public function closingStock(Request $request){
-       $sales = new Sale();
        $getCounter = Counter::where('user_id',Auth::id())->first();
-            $getTotalSale = Sale::where('counter_id',$getCounter->id)->first();
-           $getProd = Stock::where('id', $request->name)->first();
-           $getStock = Assign::where('name', $getProd->name)->first();
-           if ($getStock->stock==0){
-               return redirect()->back()->with('error', 'NO PRODUCT');
-
-           }
-           else {
-               if ($getStock->stock < $request->sales) {
+           $getProd = Stock::where('id', $request->stockId)->first();
+           $getStock = Assign::where('name', $getProd->name)->where('counter_id',$getCounter->id)->first();
+               if ($getStock->carton < $request->carton) {
                    return redirect()->back()->with('error', 'NOT ENOUGH CONFIRM YOUR STOCK FIRST');
-
+               }
+               elseif ($getStock->pieces < $request->pieces) {
+                   return redirect()->back()->with('error', 'NOT ENOUGH CONFIRM YOUR STOCK FIRST');
                }
                else {
+                   $getPrices = Assign::where('name', $getProd->name)->first();
 
+                   $sales = new Sale();
                    $sales->counter_id = $getCounter->id;
                    $sales->name = $getProd->name;
-                   $sales->closing_stock = $request->sales;
-                   $sales->price = $request->price;
-                   if (isset($getTotalSale->total)){
-                       $getCurrentTotalSale = $getTotalSale->total;
-                       $finalTotal = $getCurrentTotalSale+$request->sales*$request->price;
-                       $updateSales = Sale::where('counter_id',$getCounter->id)->update(['total' => $finalTotal]);
-                   }
-                   else {
-                       $sales->total = $request->sales * $request->price;
-                   }
+                   $sales->carton = $request->carton;
+                   $sales->pieces = $request->pieces;
+                   $sales->carton_price = $getPrices->carton_price;
+                   $sales->pieces_price = $getPrices->pieces_price;
                    $sales->save();
-                   $getCurrent = $getStock->stock;
-                   $deductStock = $getCurrent - $request->sales;
+                   $getCartons = $getStock->carton;
+                   $deductCartons = $getCartons - $request->carton;
+                   $getPieces = $getStock->pieces;
+                   $deductPieces = $getPieces - $request->pieces;
                    $update = Assign::find($getStock->id);
-                   $update->stock = $deductStock;
+                   $update->carton = $deductCartons;
+                   $update->pieces = $deductPieces;
                    $update->save();
-                   $delete = Assign::where('stock', 0)->delete();
+                   $delete = Assign::where('carton', 0)->where('pieces',0)->delete();
+
                }
-           }
            return redirect()->back()->with('success', 'CLOSING STOCK SUCCESSFULLY SAVED');
 
     }
@@ -113,38 +115,54 @@ class StockController extends Controller
         $stock = new Stock();
         $stock->name = $request->name;
         $stock->size = $request->size;
-        $stock->stock = $request->stock;
-        $stock->price = $request->price;
+        $stock->carton = $request->carton;
+        $stock->pieces = $request->pieces;
+        $stock->carton_price = $request->carton_price;
+        $stock->pieces_price = $request->pieces_price;
         $stock->save();
         return redirect()->back()->with('success','PRODUCT ADDED SUCCESSFULLY');
 
     }
     public function assignStock(Request $request){
         $stock = Stock::find($request->stockId);
-        $assign = Assign::where('name',$stock->name)->first();
-        if ($stock->stock<$request->stock){
+        $assign = Assign::where('counter_id',$request->counter_id)->first();
+        if ($stock->carton<$request->carton){
             return redirect()->back()->with('error','PRODUCT NOT ENOUGH CONFIRM STOCK');
-
+        }
+        elseif($stock->pieces<$request->pieces){
+            return redirect()->back()->with('error','PRODUCT NOT ENOUGH CONFIRM STOCK');
         }
         else {
             if (isset($assign)) {
-                $totalStock = $assign->stock + $request->stock;
-                $update = Assign::where('name', $stock->name)->update(['stock' => $totalStock]);
-                $currentStock = $stock->stock;
-                $deductStock = $currentStock - $request->stock;
-                $stock->stock = $deductStock;
+                $totalCarton = $assign->carton + $request->carton;
+                $totalPieces = $assign->pieces + $request->pieces;
+                $update = Assign::where('name', $stock->name)->update(['carton' => $totalCarton]);
+                $update = Assign::where('name', $stock->name)->update(['pieces' => $totalPieces]);
+                $currentCarton = $stock->carton;
+                $currentPieces = $stock->pieces;
+                $deductCartons = $currentCarton - $request->carton;
+                $deductPieces = $currentPieces - $request->pieces;
+                $stock->carton = $deductCartons;
+                $stock->pieces = $deductPieces;
                 $stock->save();
             } else {
                 $assign = new Assign();
                 $assign->counter_id = $request->counter_id;
                 $assign->name = $request->name;
                 $assign->size = $request->size;
-                $assign->stock = $request->stock;
-                $assign->price = $request->price;
+                $assign->carton = $request->carton;
+                $assign->pieces = $request->pieces;
+                $assign->carton_price = $request->carton_price;
+                $assign->pieces_price = $request->pieces_price;
                 $assign->save();
-                $currentStock = $stock->stock;
-                $deductStock = $currentStock - $request->stock;
-                $stock->stock = $deductStock;
+                $currentCartons = $stock->carton;
+                $currentPieces = $stock->pieces;
+                $deductCarton = $currentCartons - $request->carton;
+                $deductP = $currentPieces - $request->pieces;
+
+                $stock->carton = $deductCarton;
+                $stock->pieces = $deductP;
+
                 $stock->save();
             }
         }
@@ -166,13 +184,22 @@ class StockController extends Controller
                                                             <input type="text" name="size" value="'.$stockId->size.'" placeholder="Product Description" class="form-control" id="recipient-name" required>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label for="recipient-name" class="col-form-label">Stock:</label>
-                                                            <input type="text" name="stock" value="'.$stockId->stock.'" placeholder="Stock" class="form-control" id="recipient-name" required>
+                                                            <label for="recipient-name" class="col-form-label">Carton Price:</label>
+                                                            <input type="text" name="carton_price" value="'.$stockId->carton_price.'" placeholder="Product Price" class="form-control" id="recipient-name" required>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label for="recipient-name" class="col-form-label">Price:</label>
-                                                            <input type="text" name="price" value="'.$stockId->price.'" placeholder="Product Price" class="form-control" id="recipient-name" required>
+                                                            <label for="recipient-name" class="col-form-label">Pieces Price:</label>
+                                                            <input type="text" name="pieces_price" value="'.$stockId->pieces_price.'" placeholder="Product Price" class="form-control" id="recipient-name" required>
                                                         </div>
+                                                        <div class="form-group">
+                                                            <label for="recipient-name" class="col-form-label">Cartons/Crates:</label>
+                                                            <input type="text" name="carton" value="'.$stockId->carton.'" placeholder="Cartons" class="form-control" id="recipient-name" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="recipient-name" class="col-form-label">Pieces:</label>
+                                                            <input type="text" name="pieces" value="'.$stockId->pieces.'" placeholder="Pieces" class="form-control" id="recipient-name" required>
+                                                        </div>
+
         ';
         return response($output);
     }
@@ -180,8 +207,10 @@ class StockController extends Controller
         $edit = Stock::find($request->stockId);
         $edit->name = $request->name;
         $edit->size = $request->size;
-        $edit->stock = $request->stock;
-        $edit->price = $request->price;
+        $edit->carton = $request->carton;
+        $edit->pieces = $request->pieces;
+        $edit->carton_price = $request->carton_price;
+        $edit->pieces_price = $request->pieces_price;
         $edit->save();
 
         return redirect(url('stock'))->with('success','PRODUCT EDITED SUCCESSFULLY');

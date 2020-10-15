@@ -74,21 +74,23 @@
         <ul class="header-actions">
             <li class="dropdown">
                 <a href="#" id="userSettings" class="user-settings" data-toggle="dropdown" aria-haspopup="true">
-                    <span class="user-name">Kelvin Njoroge</span>
-                    <span class="avatar">K<span class="status busy"></span></span>
+                    <span class="user-name">{{\Illuminate\Support\Facades\Auth::user()->name}}</span>
+                    <span class="avatar">A<span class="status busy"></span></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userSettings">
                     <div class="header-profile-actions">
                         <div class="header-user-profile">
                             <div class="header-user">
-                                <img src="img/user.png" alt="Admin Template" />
+                                <img src="img/default.png" alt="Admin Template" />
                             </div>
-                            <h5>Kelvin Njoroge</h5>
-                            <p>Owner</p>
+                            <h5>{{\Illuminate\Support\Facades\Auth::user()->name}}</h5>
+                            <p>Admin</p>
                         </div>
-                        <a href="user-profile.html"><i class="icon-user1"></i> My Profile</a>
-                        <a href="account-settings.html"><i class="icon-settings1"></i> Account Settings</a>
-                        <a href="login.html"><i class="icon-log-out1"></i> Sign Out</a>
+                        <a href="{{url('adminProfile')}}"><i class="icon-user1"></i> My Profile</a>
+                        <form action="{{route('logout')}}" method="post" id="logout">
+                            @csrf
+                            <a href="javascript:document.getElementById('logout').submit();"><i class="icon-log-out1"></i> Sign Out</a>
+                        </form>
                     </div>
                 </div>
             </li>
@@ -188,7 +190,7 @@
         <div class="collapse navbar-collapse" id="WafiAdminNavbar">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link active-page dropdown-toggle" href="#" id="dashboardsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link active-page dropdown-toggle" href="{{url('admin')}}" id="dashboardsDropdown" role="button" aria-haspopup="true" aria-expanded="false">
                         <i class="icon-devices_other nav-icon"></i>
                         Dashboard
                     </a>
@@ -211,6 +213,12 @@
                         Workers
                     </a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="{{url('processedSales')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-package nav-icon"></i>
+                        Processed Sales
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -225,7 +233,7 @@
         <!-- Page header start -->
         <div class="page-header">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active">Sales Dashboard</li>
+                <li class="breadcrumb-item active">Admin Dashboard</li>
             </ol>
 
             <ul class="app-actions">

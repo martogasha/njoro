@@ -90,7 +90,7 @@
                         <a href="{{url('profile')}}"><i class="icon-user1"></i> My Profile</a>
                         <form action="{{route('logout')}}" method="post" id="logout">
                             @csrf
-                        <a href="javascript:document.getElementById('logout').submit();"><i class="icon-log-out1"></i> Sign Out</a>
+                            <a href="javascript:document.getElementById('logout').submit();"><i class="icon-log-out1"></i> Sign Out</a>
                         </form>
                     </div>
                 </div>
@@ -216,7 +216,7 @@
         <!-- Page header start -->
         <div class="page-header">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active"><a href="{{url('admin')}}">Dashboard</a></li>
+                <li class="breadcrumb-item active"><a href="{{url('counter')}}">Home</a></li>
                 <li class="breadcrumb-item">{{$getUserId->name}}</li>
 
             </ol>
@@ -256,10 +256,12 @@
                 <label for="exampleInputEmail1">Worker Area</label>
                 <input type="text" name="work" value="{{$getUserId->property->name}}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Work Area" readonly>
             </div>
-            <div class="form-group">
-                <label for="exampleInputEmail1">Password</label>
-                <input type="password" name="password" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Password">
-            </div>
+                 <div class="form-group">
+                     <label for="exampleInputEmail1">Password</label>
+                     <input type="password" name="password" class="form-control" id="password" aria-describedby="emailHelp" placeholder="Password">
+                     <br>
+                     <input type="checkbox" onclick="passwordFunction()">Show Password
+                 </div>
 
                  <button type="submit" class="btn btn-success">Save</button>
              </form>
@@ -339,6 +341,14 @@
 
         });
     });
+    function passwordFunction() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
 </script>
 
 <!-- Mirrored from bootstrap.gallery/wafi-admin/dashboard-v2/topbar/data-tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 08 Jul 2020 08:15:07 GMT -->

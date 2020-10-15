@@ -13,7 +13,7 @@
     <link rel="shortcut icon" href="img/fav.png" />
 
     <!-- Title -->
-    <title>Njoro - Workers Dashboard</title>
+    <title>Njoro - Profile Dashboard</title>
 
 
     <!-- *************
@@ -35,10 +35,9 @@
     <!-- DateRange css -->
     <link rel="stylesheet" href="vendor/daterange/daterange.css" />
 
-    <!-- Data Tables -->
-    <link rel="stylesheet" href="vendor/datatables/dataTables.bs4.css" />
-    <link rel="stylesheet" href="vendor/datatables/dataTables.bs4-custom.css" />
-    <link href="vendor/datatables/buttons.bs.css" rel="stylesheet" />
+    <!-- Chartist css -->
+    <link rel="stylesheet" href="vendor/chartist/css/chartist.min.css" />
+    <link rel="stylesheet" href="vendor/chartist/css/chartist-custom.css" />
 
 </head>
 <body>
@@ -209,9 +208,15 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link active-page dropdown-toggle" href="{{url('workers')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="{{url('workers')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
                         <i class="icon-package nav-icon"></i>
                         Workers
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link active-page dropdown-toggle" href="{{url('adminProfile')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-package nav-icon"></i>
+                        {{$getUserId->name}} Profile
                     </a>
                 </li>
                 <li class="nav-item dropdown">
@@ -224,6 +229,7 @@
         </div>
     </nav>
     <!-- Navigation end -->
+    @include('flash-message')
 
 
     <!-- *************
@@ -235,7 +241,7 @@
         <div class="page-header">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item active"><a href="{{url('admin')}}">Dashboard</a></li>
-                <li class="breadcrumb-item">Stock</li>
+                <li class="breadcrumb-item">{{$getUserId->name}}</li>
 
             </ol>
 
@@ -259,135 +265,27 @@
             </ul>
         </div>
         <!-- Page header end -->
-
-@include('flash-message')
         <!-- Content wrapper start -->
         <div class="content-wrapper">
-
-            <!-- Row start -->
-            <div class="row gutters">
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-
-                    <div class="table-container">
-                        <div class="t-header">Workers Management</div>
-                        <div class="table-responsive">
-                            <table id="copy-print-csv" class="table custom-table">
-                                <br>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customModalTwo">
-                                    Register Worker
-                                </button>
-                                <!-- Modal -->
-                                <div class="modal fade" id="customModalTwo" tabindex="-1" role="dialog" aria-labelledby="customModalTwoLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <form action="{{route('workers.store')}}" method="post">
-                                            @csrf
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="customModalTwoLabel">Register Worker</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                  <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Name:</label>
-                                                        <input type="text" name="name" placeholder="Name" class="form-control" id="recipient-name" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Phone Number:</label>
-                                                        <input type="text" name="phone" placeholder="Phone Number" class="form-control" id="recipient-name" required>
-                                                    </div>
-                                                <div class="form-group">
-                                                    <label for="recipient-name" class="col-form-label">Property:</label>
-                                                    <select class="form-control" name="property_id" id="exampleFormControlSelect1">
-                                                        @foreach($properties as $property)
-                                                        <option value="{{$property->id}}">{{$property->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-
-
-                                            </div>
-                                            <div class="modal-footer custom">
-
-                                                <div class="left-side">
-                                                    <button type="button" class="btn btn-link danger" data-dismiss="modal">Cancel</button>
-                                                </div>
-                                                <div class="divider"></div>
-                                                <div class="right-side">
-                                                    <button type="submit" class="btn btn-link success">Save</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <thead>
-                                <tr>
-                                    <th>Worker Name</th>
-                                    <th>Phone Number</th>
-                                    <th>Working Area</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                                </tr>
-                                </thead>
-                                @foreach($workers as $worker)
-                                <tbody>
-                                <tr>
-                                    <td>{{$worker->name}}</td>
-                                    <td>{{$worker->phone}}</td>
-                                    <td>{{$worker->property->name}}</td>
-                                    <td><button type="button" class="btn btn-success view" name="view" id="{{$worker->id}}" data-toggle="modal" data-target="#editUser">Edit</button> </td>
-                                    <form action="{{url('deleteUser',$worker->id)}}" method="post">
-                                        @csrf
-                                    <td><button class="btn btn-danger">Delete</button> </td>
-                                    </form>
-
-
-                                </tr>
-
-                                </tbody>
-                                @endforeach
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-
+             <form action="{{url('editAdminProfile')}}" method="post">
+                 @csrf
+                 <input type="hidden" name="user_id" value="{{$getUserId->id}}">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Phone Number</label>
+                <input type="text" name="phone" value="{{$getUserId->phone}}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Phone Number">
             </div>
-            <!-- Row end -->
+            <div class="form-group">
+                <label for="exampleInputEmail1">Password</label>
+                <input type="password" name="password" class="form-control" id="password" aria-describedby="emailHelp" placeholder="Password">
+                <br>
+                <input type="checkbox" onclick="passwordFunction()">Show Password
+            </div>
+
+                 <button type="submit" class="btn btn-success">Save</button>
+             </form>
 
         </div>
         <!-- Content wrapper end -->
-        <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="customModalTwoLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <form action="{{route('editUser')}}" method="post">
-                    @csrf
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="customModalTwoLabel">Add Product</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body" id="modalBody">
-
-
-                        </div>
-                        <div class="modal-footer custom">
-
-                            <div class="left-side">
-                                <button type="button" class="btn btn-link danger" data-dismiss="modal">Cancel</button>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="right-side">
-                                <button type="submit" class="btn btn-link success">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
 
 
     </div>
@@ -407,51 +305,51 @@
 			************ Required JavaScript Files *************
 		************* -->
 <!-- Required jQuery first, then Bootstrap Bundle JS -->
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/moment.js"></script>
+<script src="{{asset('js/jquery.min.js')}}"></script>
+<script src="{{asset('js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{asset('js/moment.js')}}"></script>
 
 
 <!-- *************
 			************ Vendor Js Files *************
 		************* -->
 <!-- Slimscroll JS -->
-<script src="vendor/slimscroll/slimscroll.min.js"></script>
-<script src="vendor/slimscroll/custom-scrollbar.js"></script>
+<script src="{{asset('vendor/slimscroll/slimscroll.min.js')}}"></script>
+<script src="{{asset('vendor/slimscroll/custom-scrollbar.js')}}"></script>
 
 <!-- Daterange -->
-<script src="vendor/daterange/daterange.js"></script>
-<script src="vendor/daterange/custom-daterange.js"></script>
+<script src="{{asset('vendor/daterange/daterange.js')}}"></script>
+<script src="{{asset('vendor/daterange/custom-daterange.js')}}"></script>
 
 <!-- Data Tables -->
-<script src="vendor/datatables/dataTables.min.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap.min.js"></script>
+<script src="{{asset('vendor/datatables/dataTables.min.js')}}"></script>
+<script src="{{asset('vendor/datatables/dataTables.bootstrap.min.js')}}"></script>
 
 <!-- Custom Data tables -->
-<script src="vendor/datatables/custom/custom-datatables.js"></script>
-<script src="vendor/datatables/custom/fixedHeader.js"></script>
+<script src="{{asset('vendor/datatables/custom/custom-datatables.js')}}"></script>
+<script src="{{asset('vendor/datatables/custom/fixedHeader.js')}}"></script>
 
 <!-- Download / CSV / Copy / Print -->
-<script src="vendor/datatables/buttons.min.js"></script>
-<script src="vendor/datatables/jszip.min.js"></script>
-<script src="vendor/datatables/pdfmake.min.js"></script>
-<script src="vendor/datatables/vfs_fonts.js"></script>
-<script src="vendor/datatables/html5.min.js"></script>
-<script src="vendor/datatables/buttons.print.min.js"></script>
+<script src="{{asset('vendor/datatables/buttons.min.js')}}"></script>
+<script src="{{asset('vendor/datatables/jszip.min.js')}}"></script>
+<script src="{{asset('vendor/datatables/pdfmake.min.js')}}"></script>
+<script src="{{asset('vendor/datatables/vfs_fonts.js')}}"></script>
+<script src="{{asset('vendor/datatables/html5.min.js')}}"></script>
+<script src="{{asset('vendor/datatables/buttons.print.min.js')}}"></script>
 
 <!-- Main Js Required -->
-<script src="js/main.js"></script>
+<script src="{{asset('js/main.js')}}"></script>
 
 </body>
 <script>
-    $(document).on('click','.view',function () {
-        $value = $(this).attr('id');
+    $('#productDesc').on('change',function () {
+        $value = $(this).val();
         $.ajax({
             type:"get",
-            url:"{{url('getUserDetail')}}",
-            data:{'userId':$value},
+            url:"{{url('getProdDetails')}}",
+            data:{'prodId':$value},
             success:function (data) {
-                $('#modalBody').html(data);
+                $('#prodInput').val(data);
             },
             error:function (error) {
                 console.log(error)
@@ -461,6 +359,15 @@
 
         });
     });
+    function passwordFunction() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
 </script>
+
 <!-- Mirrored from bootstrap.gallery/wafi-admin/dashboard-v2/topbar/data-tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 08 Jul 2020 08:15:07 GMT -->
 </html>

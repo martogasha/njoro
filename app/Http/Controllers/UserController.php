@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Property;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index(){
-        $workers = User::all();
+        $workers = User::where('id','!=',Auth::id())->get();
         $properties = Property::all();
         return view('admin.user',[
             'workers'=>$workers,

@@ -8,6 +8,7 @@ use App\Property;
 use App\Stock;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\Constraint\Count;
 
 class PropertyController extends Controller
@@ -44,19 +45,17 @@ class PropertyController extends Controller
     public function getCounterDetail(Request $request){
         if ($request->ajax()){
             $output = "";
-            $ccc = "";
             $ddd = "";
 
             $getCounter = Counter::find($request->counterId);
         }
         $user = User::find($getCounter->user_id);
-        $alls = User::where('id','!=',$getCounter->user_id)->get();
+        $alls = User::where('id','!=',Auth::id())->where('id','!=',$user->id)->get();
         foreach ($alls as $all){
-            $ddd = '<option value="'.$all->id.'">'.$all->name.'</option>';
+            $ddd.= '<option value="'.$all->id.'">'.$all->name.'</option>';
         }
-        $ccc = '<option value="'.$user->id.'">'.$user->name.'</option>';
 
-        $output = '
+        $output.= '
         <input type="hidden" value="'.$getCounter->id.'" name="counterId">
                                                   <div class="form-group">
                                                             <label for="recipient-name" class="col-form-label">Counter Name:</label>
@@ -65,7 +64,7 @@ class PropertyController extends Controller
                                                         <div class="form-group">
                                                         <label for="recipient-name" class="col-form-label">Assigned Worker:</label>
                                                         <select class="form-control" name="user_id" id="exampleFormControlSelect1">
-                                                        '.$ccc.'
+                                                       <option value="'.$user->id.'">'.$user->name.'</option>
                                                         '.$ddd.'
                                                         </select>
 

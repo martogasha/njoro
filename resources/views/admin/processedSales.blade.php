@@ -13,7 +13,7 @@
     <link rel="shortcut icon" href="img/fav.png" />
 
     <!-- Title -->
-    <title>Njoro - Workers Dashboard</title>
+    <title>Njoro - Processed Sales Dashboard</title>
 
 
     <!-- *************
@@ -75,8 +75,8 @@
         <ul class="header-actions">
             <li class="dropdown">
                 <a href="#" id="userSettings" class="user-settings" data-toggle="dropdown" aria-haspopup="true">
-                    <span class="user-name">{{\Illuminate\Support\Facades\Auth::user()->name}}</span>
-                    <span class="avatar">A<span class="status busy"></span></span>
+                    <span class="user-name">Kelvin Njoroge</span>
+                    <span class="avatar">K<span class="status busy"></span></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userSettings">
                     <div class="header-profile-actions">
@@ -84,8 +84,8 @@
                             <div class="header-user">
                                 <img src="img/default.png" alt="Admin Template" />
                             </div>
-                            <h5>{{\Illuminate\Support\Facades\Auth::user()->name}}</h5>
-                            <p>Admin</p>
+                            <h5>Kelvin Njoroge</h5>
+                            <p>Owner</p>
                         </div>
                         <a href="{{url('adminProfile')}}"><i class="icon-user1"></i> My Profile</a>
                         <form action="{{route('logout')}}" method="post" id="logout">
@@ -209,13 +209,13 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link active-page dropdown-toggle" href="{{url('workers')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="{{url('workers')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
                         <i class="icon-package nav-icon"></i>
                         Workers
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="{{url('processedSales')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link active-page dropdown-toggle" href="{{url('processedSales')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
                         <i class="icon-package nav-icon"></i>
                         Processed Sales
                     </a>
@@ -235,7 +235,7 @@
         <div class="page-header">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item active"><a href="{{url('admin')}}">Dashboard</a></li>
-                <li class="breadcrumb-item">Stock</li>
+                <li class="breadcrumb-item">Sales</li>
 
             </ol>
 
@@ -260,8 +260,8 @@
         </div>
         <!-- Page header end -->
 
-@include('flash-message')
-        <!-- Content wrapper start -->
+    @include('flash-message')
+    <!-- Content wrapper start -->
         <div class="content-wrapper">
 
             <!-- Row start -->
@@ -269,84 +269,31 @@
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 
                     <div class="table-container">
-                        <div class="t-header">Workers Management</div>
+                        <div class="t-header">Sales Dashboard</div>
                         <div class="table-responsive">
                             <table id="copy-print-csv" class="table custom-table">
                                 <br>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customModalTwo">
-                                    Register Worker
-                                </button>
+
                                 <!-- Modal -->
-                                <div class="modal fade" id="customModalTwo" tabindex="-1" role="dialog" aria-labelledby="customModalTwoLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <form action="{{route('workers.store')}}" method="post">
-                                            @csrf
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="customModalTwoLabel">Register Worker</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                  <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Name:</label>
-                                                        <input type="text" name="name" placeholder="Name" class="form-control" id="recipient-name" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Phone Number:</label>
-                                                        <input type="text" name="phone" placeholder="Phone Number" class="form-control" id="recipient-name" required>
-                                                    </div>
-                                                <div class="form-group">
-                                                    <label for="recipient-name" class="col-form-label">Property:</label>
-                                                    <select class="form-control" name="property_id" id="exampleFormControlSelect1">
-                                                        @foreach($properties as $property)
-                                                        <option value="{{$property->id}}">{{$property->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-
-
-                                            </div>
-                                            <div class="modal-footer custom">
-
-                                                <div class="left-side">
-                                                    <button type="button" class="btn btn-link danger" data-dismiss="modal">Cancel</button>
-                                                </div>
-                                                <div class="divider"></div>
-                                                <div class="right-side">
-                                                    <button type="submit" class="btn btn-link success">Save</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </form>
-                                    </div>
-                                </div>
                                 <thead>
                                 <tr>
+                                    <th>Counter</th>
                                     <th>Worker Name</th>
-                                    <th>Phone Number</th>
-                                    <th>Working Area</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
+                                    <th>Total Sales</th>
+                                    <th>View Sales</th>
                                 </tr>
                                 </thead>
-                                @foreach($workers as $worker)
-                                <tbody>
-                                <tr>
-                                    <td>{{$worker->name}}</td>
-                                    <td>{{$worker->phone}}</td>
-                                    <td>{{$worker->property->name}}</td>
-                                    <td><button type="button" class="btn btn-success view" name="view" id="{{$worker->id}}" data-toggle="modal" data-target="#editUser">Edit</button> </td>
-                                    <form action="{{url('deleteUser',$worker->id)}}" method="post">
-                                        @csrf
-                                    <td><button class="btn btn-danger">Delete</button> </td>
-                                    </form>
+                            @foreach($stocks as $stock)
+                                    <tbody>
+                                    <tr>
+                                        <td>{{$stock->counter->name}}(<strong>{{$stock->counter->property->name}}</strong>)</td>
+                                        <td>{{$stock->counter->user->name}}</td>
+                                        <td>Ksh:<strong>00</strong></td>
+                                        <td><button type="button" class="btn btn-info assign" name="assign" id="{{$stock->counter_id}}" data-toggle="modal" data-target="#salesModal">View Sales</button> </td>
 
+                                    </tr>
 
-                                </tr>
-
-                                </tbody>
+                                    </tbody>
                                 @endforeach
                             </table>
                         </div>
@@ -359,38 +306,38 @@
 
         </div>
         <!-- Content wrapper end -->
-        <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="customModalTwoLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <form action="{{route('editUser')}}" method="post">
-                    @csrf
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="customModalTwoLabel">Add Product</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body" id="modalBody">
-
-
-                        </div>
-                        <div class="modal-footer custom">
-
-                            <div class="left-side">
-                                <button type="button" class="btn btn-link danger" data-dismiss="modal">Cancel</button>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="right-side">
-                                <button type="submit" class="btn btn-link success">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
 
     </div>
+    <div class="modal fade" id="salesModal" tabindex="-1" role="dialog" aria-labelledby="customModalTwoLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{url('processPayment')}}" method="post">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="customModalTwoLabel">Sales</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalBody1">
+
+
+                    </div>
+                    <div class="modal-footer custom">
+
+                        <div class="left-side">
+                            <button type="button" class="btn btn-link danger" data-dismiss="modal">Cancel</button>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="right-side">
+                            <button type="submit" class="btn btn-link success">Process Sales</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- *************
 				************ Main container end *************
 			************* -->
@@ -441,17 +388,15 @@
 
 <!-- Main Js Required -->
 <script src="js/main.js"></script>
-
-</body>
 <script>
-    $(document).on('click','.view',function () {
+    $(document).on('click','.assign',function () {
         $value = $(this).attr('id');
         $.ajax({
             type:"get",
-            url:"{{url('getUserDetail')}}",
-            data:{'userId':$value},
+            url:"{{url('getSales')}}",
+            data:{'counterId':$value},
             success:function (data) {
-                $('#modalBody').html(data);
+                $('#modalBody1').html(data);
             },
             error:function (error) {
                 console.log(error)
@@ -462,5 +407,8 @@
         });
     });
 </script>
+
+</body>
+
 <!-- Mirrored from bootstrap.gallery/wafi-admin/dashboard-v2/topbar/data-tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 08 Jul 2020 08:15:07 GMT -->
 </html>

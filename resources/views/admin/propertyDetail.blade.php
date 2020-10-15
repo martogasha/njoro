@@ -81,14 +81,16 @@
                     <div class="header-profile-actions">
                         <div class="header-user-profile">
                             <div class="header-user">
-                                <img src="img/user.png" alt="Admin Template" />
+                                <img src="img/default.png" alt="Admin Template" />
                             </div>
                             <h5>Kelvin Njoroge</h5>
                             <p>Owner</p>
                         </div>
-                        <a href="user-profile.html"><i class="icon-user1"></i> My Profile</a>
-                        <a href="account-settings.html"><i class="icon-settings1"></i> Account Settings</a>
-                        <a href="login.html"><i class="icon-log-out1"></i> Sign Out</a>
+                        <a href="{{url('adminProfile')}}"><i class="icon-user1"></i> My Profile</a>
+                        <form action="{{route('logout')}}" method="post" id="logout">
+                            @csrf
+                            <a href="javascript:document.getElementById('logout').submit();"><i class="icon-log-out1"></i> Sign Out</a>
+                        </form>
                     </div>
                 </div>
             </li>
@@ -217,6 +219,12 @@
                         {{$propertyDetail->name}}
                     </a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="{{url('processedSales')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-package nav-icon"></i>
+                        Processed Sales
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -315,7 +323,7 @@
                         </div>
                         </a>
                         <div class="sale-num">
-                            <h4>{{$counter->name}}</h4>
+                            <h4>{{$counter->property->name}}({{$counter->name}})</h4>
                             <p>{{$counter->user->name}}</p>
                             <br>
                             <button type="button" class="btn btn-success view" name="view" id="{{$counter->id}}" data-toggle="modal" data-target="#editModal">Edit</button>

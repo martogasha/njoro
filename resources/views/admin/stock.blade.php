@@ -82,14 +82,16 @@
                     <div class="header-profile-actions">
                         <div class="header-user-profile">
                             <div class="header-user">
-                                <img src="img/user.png" alt="Admin Template" />
+                                <img src="img/default.png" alt="Admin Template" />
                             </div>
                             <h5>Kelvin Njoroge</h5>
                             <p>Owner</p>
                         </div>
-                        <a href="user-profile.html"><i class="icon-user1"></i> My Profile</a>
-                        <a href="account-settings.html"><i class="icon-settings1"></i> Account Settings</a>
-                        <a href="login.html"><i class="icon-log-out1"></i> Sign Out</a>
+                        <a href="{{url('adminProfile')}}"><i class="icon-user1"></i> My Profile</a>
+                        <form action="{{route('logout')}}" method="post" id="logout">
+                            @csrf
+                            <a href="javascript:document.getElementById('logout').submit();"><i class="icon-log-out1"></i> Sign Out</a>
+                        </form>
                     </div>
                 </div>
             </li>
@@ -212,6 +214,12 @@
                         Workers
                     </a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="{{url('processedSales')}}" id="appsDropdown" role="button"  aria-haspopup="true" aria-expanded="false">
+                        <i class="icon-package nav-icon"></i>
+                        Processed Sales
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -289,14 +297,25 @@
                                                         <label for="recipient-name" class="col-form-label">Size:</label>
                                                         <input type="text" name="size" placeholder="Product Description" class="form-control" id="recipient-name" required>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Stock:</label>
-                                                        <input type="text" name="stock" placeholder="Stock" class="form-control" id="recipient-name" required>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Price:</label>
-                                                        <input type="text" name="price" placeholder="Product Price" class="form-control" id="recipient-name" required>
-                                                    </div>
+                                                <div class="form-group">
+                                                    <label for="recipient-name" class="col-form-label">Carton/Crate Price:</label>
+                                                    <input type="text" name="carton_price" placeholder="Carton Price" class="form-control" id="recipient-name" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="recipient-name" class="col-form-label">Pieces Price:</label>
+                                                    <input type="text" name="pieces_price" placeholder="Pieces Price" class="form-control" id="recipient-name" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="recipient-name" class="col-form-label">Cartons/crates:</label>
+                                                    <input type="text" name="carton" placeholder="Carton/Create Number" class="form-control" id="recipient-name">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="recipient-name" class="col-form-label">Pieces:</label>
+                                                    <input type="text" name="pieces" placeholder="Pieces" class="form-control" id="recipient-name">
+                                                </div>
+
+
 
                                             </div>
                                             <div class="modal-footer custom">
@@ -317,7 +336,8 @@
                                 <tr>
                                     <th>Product Name</th>
                                     <th>Size</th>
-                                    <th>Stock</th>
+                                    <th>Cartons/Crates</th>
+                                    <th>Pieces</th>
                                     <th>Price</th>
                                     <th>Assign Stock</th>
                                     <th>Edit</th>
@@ -328,24 +348,9 @@
                                 <tr>
                                     <td>{{$stock->name}}</td>
                                     <td>{{$stock->size}}</td>
-                                    @switch($stock)
-                                        @case($stock->stock>40)
-                                        <td>2Carton({{$stock->stock-40}})Pieces</td>
-                                        @break
-                                        @case($stock->stock==40)
-                                        <td>2Carton</td>
-                                        @break
-                                        @case($stock->stock>20)
-                                        <td>1Carton({{$stock->stock-20}})Pieces</td>
-                                        @break
-                                        @case($stock->stock==20)
-                                    <td>1Carton</td>
-                                        @break
-                                        @case($stock)
-                                        <td>{{$stock->stock}}Pieces</td>
-                                        @break
-                                    @endswitch
-                                    <td>Ksh:@ {{$stock->price}}</td>
+                                        <td>{{$stock->carton}}</td>
+                                        <td>{{$stock->pieces}}</td>
+                                    <td>Ksh:@ {{$stock->pieces_price}}</td>
                                     <td><button type="button" class="btn btn-info assign" name="assign" id="{{$stock->id}}" data-toggle="modal" data-target="#assignModal">Assign Stock</button> </td>
                                     <td><button type="button" class="btn btn-success view" name="view" id="{{$stock->id}}" data-toggle="modal" data-target="#editModal">Edit</button> </td>
 

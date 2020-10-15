@@ -18,6 +18,9 @@ class LoginController extends Controller
             if (Auth::user()->role ==1) {
                 return redirect(url('counter'))->with('success', 'LOGIN SUCCESS');
             }
+            elseif (Auth::user()->role ==0) {
+                return redirect(url('admin'))->with('success', 'LOGIN SUCCESS');
+            }
             else{
                 return redirect()->back()->with('error','Not Authorised');
 

@@ -17,8 +17,11 @@ class CreateSalesTable extends Migration
             $table->id();
             $table->integer('counter_id');
             $table->string('name');
-            $table->integer('closing_stock');
-            $table->integer('price');
+            $table->string('size');
+            $table->integer('carton')->nullable();
+            $table->integer('pieces')->nullable();
+            $table->integer('carton_price')->nullable();
+            $table->integer('pieces_price')->nullable();
             $table->integer('total')->nullable();
             $table->timestamps();
         });

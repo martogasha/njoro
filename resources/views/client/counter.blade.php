@@ -267,20 +267,20 @@
                                             <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="recipient-name" class="col-form-label">Product Name:</label>
-                                                        <select class="form-control" name="name" id="productDesc">
+                                                        <select class="form-control" name="stockId" id="productDesc">
                                                             @foreach($products as $product)
                                                                 <option value="{{$product->id}}">{{$product->name}}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                <div class="form-group" >
-                                                    <label for="recipient-name" class="col-form-label">Price:</label>
-                                                    <input type="text" name="price" class="form-control" id="prodInput">
-                                                </div>
                                                     <div class="form-group">
-                                                        <label for="recipient-name" class="col-form-label">Sales:</label>
-                                                        <input type="text" name="sales" placeholder="sales" class="form-control" id="recipient-name">
+                                                        <label for="recipient-name" class="col-form-label">Cartons:</label>
+                                                        <input type="text" name="carton" placeholder="Cartons" class="form-control" id="recipient-name">
                                                     </div>
+                                                <div class="form-group">
+                                                    <label for="recipient-name" class="col-form-label">Pieces:</label>
+                                                    <input type="text" name="pieces" placeholder="Pieces" class="form-control" id="recipient-name">
+                                                </div>
 
 
                                             </div>
@@ -302,7 +302,8 @@
                                 <tr>
                                     <th>Product Name</th>
                                     <th>Size</th>
-                                    <th>Stock</th>
+                                    <th>Cartons/Crates</th>
+                                    <th>Pieces</th>
                                     <th>Price</th>
                                 </tr>
                                 </thead>
@@ -311,24 +312,9 @@
                                 <tr>
                                     <td>{{$stock->name}}</td>
                                     <td>{{$stock->size}}</td>
-                                    @switch($stock)
-                                        @case($stock->stock>40)
-                                        <td>2Carton({{$stock->stock-40}})Pieces</td>
-                                        @break
-                                        @case($stock->stock==40)
-                                        <td>2Carton</td>
-                                        @break
-                                        @case($stock->stock>20)
-                                        <td>1Carton({{$stock->stock-20}})Pieces</td>
-                                        @break
-                                        @case($stock->stock==20)
-                                        <td>1Carton</td>
-                                        @break
-                                        @case($stock)
-                                        <td>{{$stock->stock}}Pieces</td>
-                                        @break
-                                    @endswitch
-                                    <td>Ksh:{{$stock->price}}</td>
+                                    <td>{{$stock->carton}}</td>
+                                    <td>{{$stock->pieces}}</td>
+                                    <td>Ksh:{{$stock->pieces_price}}</td>
 
                                 </tr>
                                     @endforeach

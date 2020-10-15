@@ -37,11 +37,17 @@ Route::get('counterDetail/{id}','PropertyController@counterDetail');
 Route::post('assignStock','StockController@assignStock');
 Route::get('getStock','StockController@getStock');
 Route::resource('sales','SalesController');
+Route::post('processPayment','SalesController@processPayment');
+Route::get('processedSales','SalesController@processedSales');
+
 Route::get('getSales','SalesController@getSales');
 Route::resource('counter','CounterController');
 Route::post('closingStock','StockController@closingStock');
 Route::get('getProdDetails','StockController@getProdDetails');
 Route::resource('profile','ProfileController');
+Route::get('adminProfile','ProfileController@adminProfile');
+Route::post('editAdminProfile','ProfileController@editAdminProfile');
+
 
 
 Auth::routes();
